@@ -1,22 +1,30 @@
 package migration
 
 import (
-    "fmt"
-    "strings"
+	"fmt"
 
-    "github.com/ledongthuc/admin-generator-go/database"
+	"github.com/ledongthuc/admin-generator-go/dataAccess"
+	"github.com/ledongthuc/admin-generator-go/entity"
 )
 
+// Run migration of admin generator. It will get tables and their columns, build configuration file and APIs
 func Run() {
-    tableDataAccess := database.NewTableDataAccess()
-    tables := tableDataAccess.GetAll()
+	// tables := getTables()
+	// columns := getColumns(tables)
+	// tables = fillColumnsIntoTables(tables, columns)
+	return
+}
 
-    var result []string
-    for _, table := range tables {
-        result = append(result, table.Name)
+func getTables() []entity.Table {
+	tableDataAccess := dataAccess.NewTableDataAccess()
+	tables := tableDataAccess.GetAll()
+	fmt.Println(tables)
+	return tables
+}
 
-    }
-    fmt.Println(strings.Join(result, ","))
-
-    return
+func getColumns(tables []entity.Table) []entity.Column {
+	columnDataAccess := dataAccess.NewColumnDataAccess()
+	columns := columnDataAccess.GetByTables(tables)
+	fmt.Println(columns)
+	return columns
 }
