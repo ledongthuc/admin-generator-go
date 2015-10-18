@@ -1,0 +1,41 @@
+<div class="box">
+  <div class="box-header">
+    <button class="btn btn-block btn-primary btn-flat">Add new</button>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+
+      <table id="dataTable" class="table table-bordered table-hover" ng-controller="ContentListCtrl">
+        <thead>
+          <tr >
+              <th ng-repeat="column in columns">
+                  {{column.name}}
+              </th>
+          </tr>
+        </thead>
+        <tbody>
+
+            <tr ng-repeat="cell in cells">
+              <td ng-repeat="column in columns">
+                  {{cell[column.name]}}
+              </td>
+              <td align="center">
+                  <button class="btn btn-block btn-default btn-flat" style="width:70px">Edit</button>
+              </td>
+              <td align="center">
+                  <button class="btn btn-block btn-danger btn-flat" style="width:70px">Delete</button>
+              </td>
+            </tr>
+
+        </tbody>
+        <tfoot>
+          <tr>
+              <th ng-repeat="column in columns">
+                  {{column.name}}
+              </th>
+          </tr>
+        </tfoot>
+      </table>
+
+
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

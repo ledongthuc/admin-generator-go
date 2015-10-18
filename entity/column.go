@@ -2,11 +2,11 @@ package entity
 
 // Column entity in table `information_schema.columns`
 type Column struct {
-	Name        string `db:"column_name"`
-	Nullable    string `db:"is_nullable"`
-	DataType    string `db:"data_type"`
-	TableName   string `db:"table_schema"`
-	TableSchema string `db:"table_name"`
+	Name        string `db:"column_name" json:"name"`
+	Nullable    string `db:"is_nullable" json:"-"`
+	DataType    string `db:"data_type" json:"-"`
+	TableName   string `db:"table_schema" json:"-"`
+	TableSchema string `db:"table_name" json:"table_name"`
 }
 
 // NewColumn create an instance of `Column` entity

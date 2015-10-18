@@ -11,23 +11,20 @@ import (
 )
 
 // TableDataAccess contains methods that used for access to `information_schema.tables`.
-type TableDataAccess struct {
+type tableDataAccess struct {
 }
 
-// NewTableDataAccess use create the instance of TableDataAccess
-func NewTableDataAccess() TableDataAccess {
-	return TableDataAccess{}
-}
+var Table tableDataAccess
 
 // GetAll use to select all tables from `information_schema.tables`.
-func (tableDataAccess *TableDataAccess) GetAll() []entity.Table {
+func (tableDataAccess *tableDataAccess) GetAll() []entity.Table {
 	var tables []entity.Table
 	configuration := helpers.LoadConfiguration()
 
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Fatal(err)
-		return tables
+		log.Println(err)
+		return nil
 	}
 
 	err = dbx.Select(&tables,
@@ -38,13 +35,15 @@ func (tableDataAccess *TableDataAccess) GetAll() []entity.Table {
         WHERE
             table_schema='public' AND
             table_type='BASE TABLE';`)
-
+	dbx.Close()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return nil
 	}
 
 	if len(tables) <= 0 {
-		log.Fatal("Don't have any tables in database")
+		log.Println("Don't have any tables in database")
+		return nil
 	}
 
 	return tables
