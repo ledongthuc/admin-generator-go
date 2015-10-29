@@ -18,21 +18,15 @@ func main() {
 }
 
 func routingSetup(martiniRunner *martini.ClassicMartini) {
-	martiniRunner.Get("/api/**/:id", func(params martini.Params, log *log.Logger, r render.Render) {
-		apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
-		if apiHandler == nil {
-			r.JSON(404, "404 - API is not exist")
-		}
+	martiniRunner.Get("/api/**/:id", routingGetFunc)
+	martiniRunner.Get("/api/**", routingGetFunc)
+}
 
-		r.JSON((*apiHandler).Get(params))
-	})
+func routingGetFunc(params martini.Params, log *log.Logger, r render.Render) {
+	apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
+	if apiHandler == nil {
+		r.JSON(404, "404 - API is not exist")
+	}
 
-	martiniRunner.Get("/api/**", func(params martini.Params, log *log.Logger, r render.Render) {
-		apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
-		if apiHandler == nil {
-			r.JSON(404, "404 - API is not exist")
-		}
-
-		r.JSON((*apiHandler).Get(params))
-	})
+	r.JSON((*apiHandler).Get(params))
 }

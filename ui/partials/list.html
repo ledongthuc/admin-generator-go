@@ -1,14 +1,14 @@
 <div class="box">
   <div class="box-header">
-    <button class="btn btn-block btn-primary btn-flat">Add new</button>
+    <a href="#/add/{{pageName}}"><button class="btn btn-block btn-primary btn-flat" style="width: 80px">Add</button></a>
   </div><!-- /.box-header -->
-  <div class="box-body table-responsive no-padding">
+  <div class="box-body table-responsive">
 
-      <table id="dataTable" class="table table-bordered table-hover" ng-controller="ContentListCtrl">
+      <table id="dataTable" class="table table-bordered table-hover">
         <thead>
           <tr >
               <th ng-repeat="column in columns">
-                  {{column.name}}
+                  {{column.name | capitalize}}
               </th>
           </tr>
         </thead>
@@ -19,10 +19,10 @@
                   {{cell[column.name]}}
               </td>
               <td align="center">
-                  <button class="btn btn-block btn-default btn-flat" style="width:70px">Edit</button>
+                  <a href="#/edit/{{pageName}}/{{cell[primaryName]}}"><button class="btn btn-block btn-default btn-flat" style="width:70px">Edit</button></a>
               </td>
               <td align="center">
-                  <button class="btn btn-block btn-danger btn-flat" style="width:70px">Delete</button>
+                  <button class="btn btn-block btn-danger btn-flat" style="width:70px" ng-click="delete(1)">Delete</button>
               </td>
             </tr>
 

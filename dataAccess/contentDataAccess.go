@@ -51,6 +51,38 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 	return result
 }
 
+// GetAll use to select all tables from table dynamically
+func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id string) map[string]interface{} {
+	configuration := helpers.LoadConfiguration()
+
+	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	query := `SELECT * FROM ` + strconv.Quote(tableName) + ` where ` + idName + ` = ` + id
+	rows, err := dbx.Queryx(query)
+	dbx.Close()
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	for rows.Next() {
+		row := make(map[string]interface{})
+		err = rows.MapScan(row)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		return dataAccess.format(row)
+	}
+
+	return nil
+}
+
 func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[string]interface{} {
 	for columnName, value := range data {
 		switch valueType := value.(type) {

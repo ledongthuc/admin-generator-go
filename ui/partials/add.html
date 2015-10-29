@@ -1,0 +1,16 @@
+<div class="box box-primary">
+<!-- form start -->
+
+  <div class="box-body">
+
+    <div class="form-group" ng-repeat="column in columns">
+      <label>{{column.name | capitalize}}</label>
+      <input id="{{column}}" class="form-control">
+    </div>
+  </div><!-- /.box-body -->
+
+  <div class="box-footer">
+    <a href="#/list/{{pageName}}"><button class="btn btn-default">Back</button></a>
+    <button class="btn btn-primary">Add</button>
+  </div>
+</div>
