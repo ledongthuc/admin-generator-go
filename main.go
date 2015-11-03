@@ -1,7 +1,9 @@
 package main
 
 import (
-	"log"
+	"net/http"
+
+	"github.com/jbrodriguez/mlog"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	mlog.Start(mlog.LevelInfo, "logs/app.log")
 	martiniRunner := martini.Classic()
 	martiniRunner.Use(render.Renderer())
 	martiniRunner.Use(martini.Static("ui"))
@@ -18,15 +21,24 @@ func main() {
 }
 
 func routingSetup(martiniRunner *martini.ClassicMartini) {
-	martiniRunner.Get("/api/**/:id", routingGetFunc)
-	martiniRunner.Get("/api/**", routingGetFunc)
+	martiniRunner.Get("/api/**/:id", routingDetailFunc)
+	martiniRunner.Get("/api/**", routingListFunc)
 }
 
-func routingGetFunc(params martini.Params, log *log.Logger, r render.Render) {
+func routingListFunc(params martini.Params, r render.Render, request *http.Request) {
 	apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
 	if apiHandler == nil {
 		r.JSON(404, "404 - API is not exist")
 	}
 
-	r.JSON((*apiHandler).Get(params))
+	r.JSON((*apiHandler).List(request, params))
+}
+
+func routingDetailFunc(params martini.Params, r render.Render, request *http.Request) {
+	apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
+	if apiHandler == nil {
+		r.JSON(404, "404 - API is not exist")
+	}
+
+	r.JSON((*apiHandler).Detail(request, params["id"]))
 }

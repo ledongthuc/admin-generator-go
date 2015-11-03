@@ -2,8 +2,8 @@ package dataAccess
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/jbrodriguez/mlog"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
@@ -26,7 +26,7 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return columns
 	}
 
@@ -54,11 +54,11 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
             AND kcu.constraint_name = tc.constraint_name`)
 
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 	}
 
 	if len(columns) <= 0 {
-		log.Println("Don't have any tables in database")
+		mlog.Warning("Don't have any tables in database")
 	}
 
 	return columns
@@ -71,7 +71,7 @@ func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.
 
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return columns
 	}
 
@@ -100,12 +100,12 @@ func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.
 	err = dbx.Select(&columns, queryString)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
 	if len(columns) <= 0 {
-		log.Println("Don't have any columns in database")
+		mlog.Warning("Don't have any columns in database")
 		return nil
 	}
 

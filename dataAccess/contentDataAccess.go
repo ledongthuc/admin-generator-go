@@ -1,10 +1,10 @@
 package dataAccess
 
 import (
-	"log"
 	"strconv"
 	"time"
 
+	"github.com/jbrodriguez/mlog"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
@@ -24,7 +24,7 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
@@ -32,7 +32,7 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 	rows, err := dbx.Queryx(query)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
@@ -41,7 +41,7 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 		row := make(map[string]interface{})
 		err = rows.MapScan(row)
 		if err != nil {
-			log.Println(err)
+			mlog.Error(err)
 			continue
 		}
 
@@ -57,7 +57,7 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
@@ -65,7 +65,7 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 	rows, err := dbx.Queryx(query)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
@@ -73,7 +73,7 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 		row := make(map[string]interface{})
 		err = rows.MapScan(row)
 		if err != nil {
-			log.Println(err)
+			mlog.Error(err)
 			continue
 		}
 
@@ -85,13 +85,13 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 
 func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[string]interface{} {
 	for columnName, value := range data {
-		switch valueType := value.(type) {
+		switch value.(type) {
 		case []uint8:
 			data[columnName] = string(value.([]uint8))
+			break
 		case time.Time:
 			data[columnName] = value.(time.Time).Format("2/1/2006 15:04:05")
-		default:
-			log.Println(valueType)
+			break
 		}
 	}
 	return data

@@ -43,7 +43,7 @@ contentControllers.controller('ContentListCtrl', function ($scope, $http, $route
     var pageName = $routeParams.name
     $rootScope.pageName = pageName
     $rootScope.action = "list"
-    $http.get('/api/column/'+pageName).success(function(data) {
+    $http.get('/api/column?table_name='+pageName).success(function(data) {
         $scope.columns = data;
         angular.forEach(data, function(value, key) {
             if(value.primary) {
@@ -63,7 +63,7 @@ contentControllers.controller('ContentAddCtrl', function ($scope, $http, $routeP
     var pageName = $routeParams.name
     $rootScope.pageName = pageName
     $rootScope.action = "add"
-    $http.get('/api/column/'+pageName).success(function(data) {
+    $http.get('/api/column?table_name='+pageName).success(function(data) {
         $scope.columns = data;
     });
 });
@@ -72,7 +72,7 @@ contentControllers.controller('ContentEditCtrl', function ($scope, $http, $route
     var id = $routeParams.id
     $rootScope.pageName = pageName
     $rootScope.action = "edit"
-    $http.get('/api/column/'+pageName).success(function(data) {
+    $http.get('/api/column?table_name='+pageName).success(function(data) {
         $scope.columns = data;
     });
 

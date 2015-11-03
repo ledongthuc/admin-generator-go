@@ -1,8 +1,7 @@
 package dataAccess
 
 import (
-	"log"
-
+	"github.com/jbrodriguez/mlog"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
@@ -22,7 +21,7 @@ func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) stri
 	configuration := helpers.LoadConfiguration()
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return ""
 	}
 
@@ -44,18 +43,17 @@ func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) stri
         t.table_schema NOT IN ('pg_catalog', 'information_schema')
         AND t.table_name = '` + tableName + `'
     LIMIT 1`
-	log.Println(query)
 
 	var tables []entity.Table
 	err = dbx.Select(&tables, query)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return ""
 	}
 
 	if len(tables) <= 0 {
-		log.Println("Don't have any tables in database")
+		mlog.Warning("Don't have any tables in database")
 		return ""
 	}
 
@@ -69,7 +67,7 @@ func (tableDataAccess *tableDataAccess) GetAll() []entity.Table {
 
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
@@ -92,12 +90,12 @@ func (tableDataAccess *tableDataAccess) GetAll() []entity.Table {
             t.table_schema NOT IN ('pg_catalog', 'information_schema')`)
 	dbx.Close()
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 		return nil
 	}
 
 	if len(tables) <= 0 {
-		log.Println("Don't have any tables in database")
+		mlog.Warning("Don't have any tables in database")
 		return nil
 	}
 
