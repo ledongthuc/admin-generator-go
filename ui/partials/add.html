@@ -1,15 +1,14 @@
 <div class="box box-primary">
 <!-- form start -->
-
   <div class="box-body">
-    <div class="form-group" ng-repeat="column in columns">
+    <div class="form-group" ng-repeat="column in columns | filter:column.is_sequence == false">
       <label>{{column.name | capitalize}}</label>
       <input id="{{column}}" class="form-control">
     </div>
   </div><!-- /.box-body -->
 
   <div ng-show="columns" ng-cloak class="box-footer">
-    <a href="#/list/{{pageName}}"><button class="btn btn-default">Back</button></a>
+    <a href="#/list/{{pageName}}"><button class="btn btn-default">List</button></a>
     <button class="btn btn-primary">Add</button>
   </div>
 </div>

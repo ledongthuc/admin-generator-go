@@ -8,6 +8,7 @@ type Column struct {
 	TableName   string `db:"table_schema" json:"-"`
 	TableSchema string `db:"table_name" json:"table_name"`
 	PrimaryKey  bool   `db:"primary_key" json:"primary"`
+	IsSequence  bool   `db:"is_sequence" json:"is_sequence"`
 }
 
 // NewColumn create an instance of `Column` entity

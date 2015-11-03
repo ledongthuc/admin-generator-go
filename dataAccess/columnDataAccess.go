@@ -37,7 +37,8 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
             t.udt_name,
             t.table_schema,
             t.table_name,
-            t.column_name = kcu.column_name as primary_key
+            t.column_name = kcu.column_name as primary_key,
+            t.column_default IS NOT NULL AND t.column_default LIKE 'nextval%%' as is_sequence
         FROM
             information_schema.columns t
         LEFT JOIN
@@ -81,7 +82,8 @@ func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.
         t.udt_name,
         t.table_schema,
         t.table_name,
-        t.column_name = kcu.column_name as primary_key
+        t.column_name = kcu.column_name as primary_key,
+        t.column_default IS NOT NULL AND t.column_default LIKE 'nextval%%' as is_sequence
     FROM
         information_schema.columns t
     LEFT JOIN
