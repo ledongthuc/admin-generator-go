@@ -94,7 +94,7 @@
             <li class="header">MAIN NAVIGATION</li>
             <li class="treeview" ng-repeat="menu in menus">
               <a href="#">
-                <i class="fa fa-folder"></i> <span>{{menu.name}}  </span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-folder"></i> <span>{{menu.name | capitalize}}  </span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="#/list/{{menu.name}}"><i class="fa fa-circle-o"></i>List</a></li>
