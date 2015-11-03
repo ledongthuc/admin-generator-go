@@ -13,6 +13,7 @@ import (
 
 func main() {
 	mlog.Start(mlog.LevelInfo, "logs/app.log")
+
 	martiniRunner := martini.Classic()
 	martiniRunner.Use(render.Renderer())
 	martiniRunner.Use(martini.Static("ui"))
