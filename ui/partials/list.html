@@ -1,10 +1,15 @@
-<div class="box">
+<div class="box" >
   <div class="box-header">
-    <a href="#/add/{{pageName}}"><button class="btn btn-block btn-primary btn-flat" style="width: 80px">Add</button></a>
+    <div ng-if="!cells" class="callout callout-warning">
+      <p>Don't have any records.</p>
+    </div>
+
+    <a href="#/add/{{pageName}}">
+        <button class="btn btn-block btn-primary btn-flat" style="width: 80px">Add</button>
+    </a>
   </div><!-- /.box-header -->
   <div class="box-body table-responsive">
-
-      <table id="dataTable" class="table table-bordered table-hover">
+      <table ng-if="cells" id="dataTable" class="table table-bordered table-hover">
         <thead>
           <tr >
               <th ng-repeat="column in columns">
@@ -13,7 +18,6 @@
           </tr>
         </thead>
         <tbody>
-
             <tr ng-repeat="cell in cells">
               <td ng-repeat="column in columns">
                   {{cell[column.name]}}
@@ -25,7 +29,6 @@
                   <button class="btn btn-block btn-danger btn-flat" style="width:70px" ng-click="delete(1)">Delete</button>
               </td>
             </tr>
-
         </tbody>
         <tfoot>
           <tr>
@@ -35,7 +38,5 @@
           </tr>
         </tfoot>
       </table>
-
-
   </div><!-- /.box-body -->
 </div><!-- /.box -->

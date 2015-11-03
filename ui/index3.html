@@ -116,8 +116,8 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-folder"></i> Home</a></li>
-            <li>{{pageName | capitalize}}</li>
-            <li class="active">{{action | capitalize}}</li>
+            <li ng-if="pageName">{{pageName | capitalize}}</li>
+            <li ng-if="action" class="active">{{action | capitalize}}</li>
           </ol>
         </section>
 
