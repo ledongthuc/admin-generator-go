@@ -5,7 +5,7 @@
 
     <div class="form-group" ng-repeat="column in columns  | filter:column.is_sequence == false">
       <label>{{column.name | capitalize}}</label>
-      <input id="{{column}}" class="form-control" value="{{data[column.name]}}">
+      <input id="{{column.name}}" class="form-control" name="{{column.name}}" value="{{contentItem[column.name]}}">
     </div>
   </div><!-- /.box-body -->
 

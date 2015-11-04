@@ -1,82 +1,46 @@
-var generatedAdminApp = angular.module('generatedAdmin', [
-    "ngRoute",
-    "menuControllers",
-    "contentControllers",
-]);
-
-generatedAdminApp.filter('capitalize', function() {
-    return function(input) {
-      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
-    }
-});
-
-generatedAdminApp.config(['$routeProvider',
-  function($routeProvider) {
-    $routeProvider.
-      when('/list/:name', {
-        templateUrl: 'partials/list.html',
-        controller: 'ContentListCtrl'
-      }).
-      when('/add/:name', {
-        templateUrl: 'partials/add.html',
-        controller: 'ContentAddCtrl'
-      }).
-      when('/edit/:name/:id', {
-        templateUrl: 'partials/edit.html',
-        controller: 'ContentEditCtrl'
-      }).
-      otherwise({
-        redirectTo: '/home'
-      });
-  }]);
-
 var menuControllers = angular.module('menuControllers', []);
-menuControllers.controller('MenuListCtrl', function ($scope, $http, $rootScope) {
-    $http.get('/api/menu').success(function(data) {
-        $rootScope.menus = data;
-    });
-
+menuControllers.controller('MenuListCtrl', function ($scope, $rootScope, MenusFactory) {
+    $rootScope.menus = MenusFactory.query()
 });
 
 var contentControllers = angular.module('contentControllers', []);
-contentControllers.controller('ContentListCtrl', function ($scope, $http, $routeParams, $rootScope) {
+contentControllers.controller('ContentListCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentsFactory) {
     var pageName = $routeParams.name
     $rootScope.pageName = pageName
     $rootScope.action = "list"
-    $http.get('/api/column?table_name='+pageName).success(function(data) {
-        $scope.columns = data;
-        angular.forEach(data, function(value, key) {
+
+    $scope.columns = ColumnsFactory.query({table_name: pageName}, function(columns) {
+        angular.forEach(columns, function(value, key) {
             if(value.primary) {
                 $scope.primaryName = value.name
+                return
             }
-        })
-    });
+        });
+    })
 
-    $http.get('/api/'+pageName).success(function(data) {
-        $scope.cells = data;
-        $scope.delete = function(id) {
-          confirm("Do you want to delete?")
-        };
-    });
+    $scope.cells = ContentsFactory.query({table_name: pageName})
+    $scope.delete = function(id) {
+      confirm("Do you want to delete?")
+    };
 });
-contentControllers.controller('ContentAddCtrl', function ($scope, $http, $routeParams, $rootScope) {
+
+contentControllers.controller('ContentAddCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentsFactory) {
     var pageName = $routeParams.name
     $rootScope.pageName = pageName
     $rootScope.action = "add"
-    $http.get('/api/column?table_name='+pageName).success(function(data) {
-        $scope.columns = data;
-    });
+    $scope.contentItem = {table_name: pageName}
+    $scope.addContent = function() {
+        ContentsFactory.create($scope.contentItem)
+    }
+
+    $scope.columns = ColumnsFactory.query({table_name: pageName})
 });
-contentControllers.controller('ContentEditCtrl', function ($scope, $http, $routeParams, $rootScope) {
+
+contentControllers.controller('ContentEditCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentFactory) {
     var pageName = $routeParams.name
     var id = $routeParams.id
     $rootScope.pageName = pageName
     $rootScope.action = "edit"
-    $http.get('/api/column?table_name='+pageName).success(function(data) {
-        $scope.columns = data;
-    });
-
-    $http.get('/api/'+pageName+"/"+id).success(function(data) {
-        $scope.data = data;
-    });
+    $scope.columns = ColumnsFactory.query({table_name: pageName})
+    $scope.contentItem = ContentFactory.show({table_name: pageName, id: id})
 });
