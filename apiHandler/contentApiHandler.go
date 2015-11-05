@@ -97,6 +97,27 @@ func (handler *ContentAPIHandler) Create(request *http.Request, data map[string]
 	return responseCode, result
 }
 
+// Delete content action
+func (handler *ContentAPIHandler) Delete(request *http.Request, key string) (int, interface{}) {
+	mlog.Info("Table name: %s", handler.TableName)
+	if handler.TableName == "" {
+		return 400, "Don't have any name"
+	}
+
+	keyName := dataAccess.Table.GetKeyByTableName(handler.TableName)
+	if key == "" {
+		return 404, "Don't have primary key"
+	}
+
+	err := dataAccess.Content.Delete(handler.TableName, keyName, key)
+	if key == "" {
+		mlog.Error(err)
+		return 404, "Can't delete item"
+	}
+
+	return 200, "Successful"
+}
+
 func hasColumnName(key string, columns []entity.Column) bool {
 	result := false
 	for _, columnName := range columns {

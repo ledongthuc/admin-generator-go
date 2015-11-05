@@ -22,5 +22,6 @@ appServices.factory('ContentsFactory', function ($resource) {
 appServices.factory('ContentFactory', function ($resource) {
     return $resource('/api/:table_name/:id', {}, {
         show: { method: 'GET'},
+        delete: { method: 'DELETE', params: { table_name: '@table_name', id: '@id' }},
     })
 });

@@ -26,7 +26,7 @@
                   <a href="#/edit/{{pageName}}/{{cell[primaryName]}}"><button class="btn btn-block btn-default btn-flat" style="width:70px">Edit</button></a>
               </td>
               <td align="center">
-                  <button class="btn btn-block btn-danger btn-flat" style="width:70px" ng-click="delete(1)">Delete</button>
+                  <button class="btn btn-block btn-danger btn-flat" style="width:70px" ng-click="delete(cell[primaryName])" data={{cell[primaryName]}}>Delete</button>
               </td>
             </tr>
         </tbody>

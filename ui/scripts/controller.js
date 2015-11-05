@@ -4,7 +4,7 @@ menuControllers.controller('MenuListCtrl', function ($scope, $rootScope, MenusFa
 });
 
 var contentControllers = angular.module('contentControllers', []);
-contentControllers.controller('ContentListCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentsFactory) {
+contentControllers.controller('ContentListCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentsFactory, ContentFactory) {
     var pageName = $routeParams.name
     $rootScope.pageName = pageName
     $rootScope.action = "list"
@@ -25,8 +25,20 @@ contentControllers.controller('ContentListCtrl', function ($scope, $routeParams,
         }
     })
     $scope.delete = function(id) {
-      confirm("Do you want to delete?")
-    };
+      var isDelete = confirm("Do you want to delete?")
+      if(isDelete) {
+          console.log(id)
+          ContentFactory.delete({ table_name: pageName, id: id }, function() {
+              $scope.cells = ContentsFactory.query({table_name: pageName}, function(cells) {
+                  if(cells == undefined || cells.length == 0) {
+                      $scope.emptyErrorStyle = {'display':'block'}
+                      return
+                  }
+              })
+          })
+
+      }
+    }
 });
 
 contentControllers.controller('ContentAddCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentsFactory) {

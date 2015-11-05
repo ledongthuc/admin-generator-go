@@ -8,3 +8,5 @@ Admin generator base on configuration and database
 4. SQL Injection
 5. Scroll to top
 6. Seperate error message
+7. Delete with hightline
+8. Delete error will show error

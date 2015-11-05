@@ -111,11 +111,26 @@ func (dataAccess *contentDataAccess) New(tableName string, data map[string]strin
         `, tableName, whereClauseColumns, whereClauseValues)
 
 	_, err = dbx.Exec(whereClause)
+	dbx.Close()
 	if err != nil {
 		return -1, err
 	}
 
 	return -1, nil
+}
+
+func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, keyValue string) error {
+	configuration := helpers.LoadConfiguration()
+	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
+
+	query := `DELETE FROM ` + strconv.Quote(tableName) + ` WHERE ` + keyName + ` = '` + keyValue + `'`
+	mlog.Info("Run scripting: %s", query)
+	_, err = dbx.Exec(query)
+	return err
 }
 
 func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[string]interface{} {
