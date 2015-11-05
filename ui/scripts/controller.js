@@ -18,7 +18,12 @@ contentControllers.controller('ContentListCtrl', function ($scope, $routeParams,
         });
     })
 
-    $scope.cells = ContentsFactory.query({table_name: pageName})
+    $scope.cells = ContentsFactory.query({table_name: pageName}, function(cells) {
+        if(cells == undefined || cells.length == 0) {
+            $scope.emptyErrorStyle = {'display':'block'}
+            return
+        }
+    })
     $scope.delete = function(id) {
       confirm("Do you want to delete?")
     };

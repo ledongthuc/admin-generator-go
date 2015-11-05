@@ -1,11 +1,15 @@
 <div class="box" >
   <div class="box-header">
+    <div ng-style="emptyErrorStyle" class="alert alert-warning alert-dismissable" style="display: none">
+          <h4>	<i class="icon fa fa-check"></i> Notice!</h4>
+          Don't have any records
+    </div>
     <a href="#/add/{{pageName}}">
         <button class="btn btn-block btn-primary btn-flat" style="width: 80px">Add</button>
     </a>
   </div><!-- /.box-header -->
   <div class="box-body table-responsive">
-      <table ng-if="cells" id="dataTable" class="table table-bordered table-hover">
+      <table ng-if="cells.length > 0" id="dataTable" class="table table-bordered table-hover">
         <thead>
           <tr >
               <th ng-repeat="column in columns">
