@@ -1,5 +1,15 @@
 <div class="box box-primary">
     <form ng-submit="addContent()">
+    <div class="box-header">
+        <div ng-style="alertSuccessStyle" class="alert alert-success alert-dismissable" style="display: none">
+                <h4>	<i class="icon fa fa-check"></i> Notice!</h4>
+                Insert successfully
+        </div>
+        <div ng-style="alertErrorStyle" class="alert alert-error alert-dismissable" style="display: none">
+                <h4>	<i class="icon fa fa-check"></i> Notice!</h4>
+                {{errorMessage}}
+        </div>
+    </div>
     <!-- form start -->
       <div class="box-body">
         <div class="form-group" ng-repeat="column in columns | filter:column.is_sequence == false">

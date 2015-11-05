@@ -6,4 +6,5 @@ import "net/http"
 type HandlerBase interface {
 	List(request *http.Request, param map[string]string) (int, interface{})
 	Detail(request *http.Request, key string) (int, interface{})
+	Create(request *http.Request, data map[string]string) (int, interface{})
 }

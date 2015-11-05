@@ -1,7 +1,9 @@
 package dataAccess
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jbrodriguez/mlog"
@@ -81,6 +83,39 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 	}
 
 	return nil
+}
+
+func (dataAccess *contentDataAccess) New(tableName string, data map[string]string) (int64, error) {
+	configuration := helpers.LoadConfiguration()
+
+	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return -1, err
+	}
+
+	var columns []string
+	var values []string
+	for column, value := range data {
+		columns = append(columns, column)
+		values = append(values, value)
+	}
+	whereClauseColumns := `"` + strings.Join(columns, "\",\"") + `"`
+	whereClauseValues := `'` + strings.Join(values, "','") + `'`
+
+	whereClause := fmt.Sprintf(`
+            INSERT INTO
+                %s (%s)
+            VALUES
+                (%s)
+        `, tableName, whereClauseColumns, whereClauseValues)
+
+	_, err = dbx.Exec(whereClause)
+	if err != nil {
+		return -1, err
+	}
+
+	return -1, nil
 }
 
 func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[string]interface{} {

@@ -30,7 +30,20 @@ contentControllers.controller('ContentAddCtrl', function ($scope, $routeParams, 
     $rootScope.action = "add"
     $scope.contentItem = {table_name: pageName}
     $scope.addContent = function() {
-        ContentsFactory.create($scope.contentItem)
+        ContentsFactory.create($scope.contentItem,
+        function(data) {
+            $scope.alertSuccessStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'none'}
+            $scope.alertSuccessStyle={'display':'block'}
+            $scope.contentItem = {table_name: pageName}
+        },
+        function(data, status) {
+            $scope.alertSuccessStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'block'}
+            $scope.contentItem = {table_name: pageName}
+            $scope.errorMessage = data.data
+        })
     }
 
     $scope.columns = ColumnsFactory.query({table_name: pageName})

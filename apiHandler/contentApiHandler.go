@@ -1,11 +1,14 @@
 package apiHandler
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/jbrodriguez/mlog"
 
 	"github.com/ledongthuc/admin-generator-go/dataAccess"
+	"github.com/ledongthuc/admin-generator-go/entity"
 )
 
 // ContentAPIHandler use to handle API request
@@ -51,4 +54,57 @@ func (handler *ContentAPIHandler) Detail(request *http.Request, keyValue string)
 
 	result := dataAccess.Content.GetById(handler.TableName, key, keyValue)
 	return 200, result
+}
+
+// Create create content
+func (handler *ContentAPIHandler) Create(request *http.Request, data map[string]string) (int, interface{}) {
+	mlog.Info("Table name: %s", handler.TableName)
+	body, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		return 400, "Can't read the request"
+	}
+
+	var formParams map[string]string
+	err = json.Unmarshal(body, &formParams)
+	if err != nil {
+		return 400, "Can't read the request"
+	}
+
+	if handler.TableName == "" {
+		return 400, "Don't have any name"
+	}
+
+	columns := dataAccess.Column.GetByTable(handler.TableName)
+	for name := range formParams {
+		existedColumn := hasColumnName(name, columns)
+		if !existedColumn {
+			delete(formParams, name)
+		}
+	}
+
+	if len(formParams) <= 0 {
+		return 404, "Data should not empty, please fill something"
+	}
+
+	var responseCode = 201
+	var result interface{}
+	_, err = dataAccess.Content.New(handler.TableName, formParams)
+	if err != nil {
+		result = err.Error()
+		responseCode = 400
+	}
+
+	return responseCode, result
+}
+
+func hasColumnName(key string, columns []entity.Column) bool {
+	result := false
+	for _, columnName := range columns {
+		if columnName.Name == key {
+			result = true
+			break
+		}
+	}
+
+	return result
 }
