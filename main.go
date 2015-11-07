@@ -25,6 +25,7 @@ func routingSetup(martiniRunner *martini.ClassicMartini) {
 	martiniRunner.Get("/api/**/:id", routingDetailFunc)
 	martiniRunner.Get("/api/**", routingListFunc)
 	martiniRunner.Post("/api/**", routingCreateFunc)
+	martiniRunner.Put("/api/**/:id", routingUpdateFunc)
 	martiniRunner.Delete("/api/**/:id", routingDeleteFunc)
 }
 
@@ -53,6 +54,15 @@ func routingCreateFunc(params martini.Params, r render.Render, request *http.Req
 	}
 
 	r.JSON((*apiHandler).Create(request, params))
+}
+
+func routingUpdateFunc(params martini.Params, r render.Render, request *http.Request) {
+	apiHandler := apiHandler.APIHandlerFactory.GenerateAPIHandler(params["_1"])
+	if apiHandler == nil {
+		r.JSON(404, "404 - API is not exist")
+	}
+
+	r.JSON((*apiHandler).Update(request, params["id"], params))
 }
 
 func routingDeleteFunc(params martini.Params, r render.Render, request *http.Request) {

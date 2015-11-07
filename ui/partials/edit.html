@@ -1,16 +1,25 @@
 <div class="box box-primary">
-<!-- form start -->
+    <form ng-submit="updateContent()">
+      <div class="box-body">
+        <div class="box-header">
+          <div ng-style="alertSuccessStyle" class="alert alert-success alert-dismissable" style="display: none">
+                  <h4>	<i class="icon fa fa-check"></i> Notice!</h4>
+                  Insert successfully
+          </div>
+          <div ng-style="alertErrorStyle" class="alert alert-error alert-dismissable" style="display: none">
+                  <h4>	<i class="icon fa fa-check"></i> Notice!</h4>
+                  {{errorMessage}}
+          </div>
+        </div>
+        <div class="form-group" ng-repeat="column in columns  | filter:column.is_sequence == false">
+          <label>{{column.name | capitalize}}</label>
+          <input id="{{column.name}}" class="form-control" name="{{column.name}}" ng-model="contentItem[column.name]">
+        </div>
+      </div><!-- /.box-body -->
 
-  <div class="box-body">
-
-    <div class="form-group" ng-repeat="column in columns  | filter:column.is_sequence == false">
-      <label>{{column.name | capitalize}}</label>
-      <input id="{{column.name}}" class="form-control" name="{{column.name}}" value="{{contentItem[column.name]}}">
-    </div>
-  </div><!-- /.box-body -->
-
-  <div class="box-footer">
-    <a href="#/list/{{pageName}}"><button class="btn btn-default">Go to List</button></a>
-    <button class="btn btn-primary">Edit</button>
-  </div>
+      <div class="box-footer">
+        <a href="#/list/{{pageName}}"><button class="btn btn-default">Go to List</button></a>
+        <button class="btn btn-primary" type="submit">Update</button>
+      </div>
+    </form>
 </div>

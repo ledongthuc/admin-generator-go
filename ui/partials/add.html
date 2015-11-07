@@ -10,7 +10,6 @@
                 {{errorMessage}}
         </div>
     </div>
-    <!-- form start -->
       <div class="box-body">
         <div class="form-group" ng-repeat="column in columns | filter:column.is_sequence == false">
           <label>{{column.name | capitalize}}</label>
@@ -20,7 +19,7 @@
 
       <div ng-show="columns" ng-cloak class="box-footer">
         <a href="#/list/{{pageName}}"><button class="btn btn-default">Go to List</button></a>
-        <button class="btn btn-primary" type="submit">Add</button>
+        <button class="btn btn-primary" type="submit">Create</button>
       </div>
   </form>
 </div>

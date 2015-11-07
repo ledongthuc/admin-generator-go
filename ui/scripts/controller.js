@@ -1,6 +1,6 @@
 var menuControllers = angular.module('menuControllers', []);
 menuControllers.controller('MenuListCtrl', function ($scope, $rootScope, MenusFactory) {
-    $rootScope.menus = MenusFactory.query()
+    $rootScope.menus = MenusFactory.queryList()
 });
 
 var contentControllers = angular.module('contentControllers', []);
@@ -9,7 +9,7 @@ contentControllers.controller('ContentListCtrl', function ($scope, $routeParams,
     $rootScope.pageName = pageName
     $rootScope.action = "list"
 
-    $scope.columns = ColumnsFactory.query({table_name: pageName}, function(columns) {
+    $scope.columns = ColumnsFactory.queryList({table_name: pageName}, function(columns) {
         angular.forEach(columns, function(value, key) {
             if(value.primary) {
                 $scope.primaryName = value.name
@@ -18,7 +18,7 @@ contentControllers.controller('ContentListCtrl', function ($scope, $routeParams,
         });
     })
 
-    $scope.cells = ContentsFactory.query({table_name: pageName}, function(cells) {
+    $scope.cells = ContentsFactory.queryList({table_name: pageName}, function(cells) {
         if(cells == undefined || cells.length == 0) {
             $scope.emptyErrorStyle = {'display':'block'}
             return
@@ -29,7 +29,7 @@ contentControllers.controller('ContentListCtrl', function ($scope, $routeParams,
       if(isDelete) {
           console.log(id)
           ContentFactory.delete({ table_name: pageName, id: id }, function() {
-              $scope.cells = ContentsFactory.query({table_name: pageName}, function(cells) {
+              $scope.cells = ContentsFactory.queryList({table_name: pageName}, function(cells) {
                   if(cells == undefined || cells.length == 0) {
                       $scope.emptyErrorStyle = {'display':'block'}
                       return
@@ -52,18 +52,18 @@ contentControllers.controller('ContentAddCtrl', function ($scope, $routeParams, 
             $scope.alertSuccessStyle={'display':'none'}
             $scope.alertErrorStyle={'display':'none'}
             $scope.alertSuccessStyle={'display':'block'}
-            $scope.contentItem = {table_name: pageName}
+            $scope.contentItem = {table_name: pageName} // Reset
         },
         function(data, status) {
             $scope.alertSuccessStyle={'display':'none'}
             $scope.alertErrorStyle={'display':'none'}
             $scope.alertErrorStyle={'display':'block'}
-            $scope.contentItem = {table_name: pageName}
+            $scope.contentItem = {table_name: pageName} // Reset
             $scope.errorMessage = data.data
         })
     }
 
-    $scope.columns = ColumnsFactory.query({table_name: pageName})
+    $scope.columns = ColumnsFactory.queryList({table_name: pageName})
 });
 
 contentControllers.controller('ContentEditCtrl', function ($scope, $routeParams, $rootScope, ColumnsFactory, ContentFactory) {
@@ -71,6 +71,23 @@ contentControllers.controller('ContentEditCtrl', function ($scope, $routeParams,
     var id = $routeParams.id
     $rootScope.pageName = pageName
     $rootScope.action = "edit"
-    $scope.columns = ColumnsFactory.query({table_name: pageName})
-    $scope.contentItem = ContentFactory.show({table_name: pageName, id: id})
+    $scope.columns = ColumnsFactory.queryList({table_name: pageName})
+    $scope.contentItem = ContentFactory.queryOne({table_name: pageName, id: id})
+
+    $scope.updateContent = function() {
+        $scope.contentItem.table_name = pageName
+        $scope.contentItem.id = id
+        ContentFactory.update($scope.contentItem,
+        function(data) {
+            $scope.alertSuccessStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'none'}
+            $scope.alertSuccessStyle={'display':'block'}
+        },
+        function(data, status) {
+            $scope.alertSuccessStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'none'}
+            $scope.alertErrorStyle={'display':'block'}
+            $scope.errorMessage = data.data
+        })
+    }
 });

@@ -1,10 +1,10 @@
 package dataAccess
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jbrodriguez/mlog"
 	"github.com/jmoiron/sqlx"
@@ -53,7 +53,7 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 	return result
 }
 
-// GetAll use to select all tables from table dynamically
+// GetById get by ID
 func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id string) map[string]interface{} {
 	configuration := helpers.LoadConfiguration()
 
@@ -119,6 +119,44 @@ func (dataAccess *contentDataAccess) New(tableName string, data map[string]strin
 	return -1, nil
 }
 
+func (dataAccess *contentDataAccess) Update(tableName string, keyName string, keyValue string, data map[string]string) (int64, error) {
+	if data == nil || len(data) <= 0 {
+		return -1, errors.New("Data should be not empty")
+	}
+
+	configuration := helpers.LoadConfiguration()
+
+	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return -1, err
+	}
+
+	var updatedParts []string
+	for column, value := range data {
+		updatedParts = append(updatedParts,
+			fmt.Sprintf("%s = '%s'", column, value))
+	}
+	updatedClause := strings.Join(updatedParts, ", ")
+
+	whereClause := fmt.Sprintf(`
+            UPDATE
+                %s
+            SET
+                %s
+            WHERE
+                %s = '%s'
+        `, tableName, updatedClause, keyName, keyValue)
+	mlog.Info(whereClause)
+	_, err = dbx.Exec(whereClause)
+	dbx.Close()
+	if err != nil {
+		return -1, err
+	}
+
+	return -1, nil
+}
+
 func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, keyValue string) error {
 	configuration := helpers.LoadConfiguration()
 	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
@@ -138,9 +176,6 @@ func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[str
 		switch value.(type) {
 		case []uint8:
 			data[columnName] = string(value.([]uint8))
-			break
-		case time.Time:
-			data[columnName] = value.(time.Time).Format("2/1/2006 15:04:05")
 			break
 		}
 	}
