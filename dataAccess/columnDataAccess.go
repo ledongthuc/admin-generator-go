@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/ledongthuc/admin-generator-go/entity"
-	"github.com/ledongthuc/admin-generator-go/helpers"
+	"github.com/ledongthuc/admin-generator-go/services"
 )
 
 // ColumnDataAccess contains methods that used for access to `information_schema.columns`.
@@ -20,13 +20,13 @@ var Column columnDataAccess
 
 // GetAll use to select all column from `information_schema.columns`.
 func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return nil
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	dbx.Close()
 	if err != nil {
 		mlog.Error(err)
@@ -71,13 +71,13 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
 
 // GetByTable use to select columns from `information_schema.tables` of inputed tableName.
 func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.Column {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return nil
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return nil

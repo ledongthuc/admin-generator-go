@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"github.com/ledongthuc/admin-generator-go/helpers"
+	"github.com/ledongthuc/admin-generator-go/services"
 )
 
 // TableDataAccess contains methods that used for access to `information_schema.tables`.
@@ -22,13 +22,13 @@ var Content contentDataAccess
 
 // GetAll use to select all tables from table dynamically
 func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]interface{} {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return nil
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return nil
@@ -59,13 +59,13 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 
 // GetById get by ID
 func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id string) map[string]interface{} {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return nil
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return nil
@@ -94,13 +94,13 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 }
 
 func (dataAccess *contentDataAccess) New(tableName string, data map[string]string) (int64, error) {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
@@ -136,13 +136,13 @@ func (dataAccess *contentDataAccess) Update(tableName string, keyName string, ke
 		return -1, errors.New("Data should be not empty")
 	}
 
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
@@ -174,13 +174,13 @@ func (dataAccess *contentDataAccess) Update(tableName string, keyName string, ke
 }
 
 func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, keyValue string) error {
-	settings, err := helpers.LoadSettings()
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return err
 	}
 
-	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return err
