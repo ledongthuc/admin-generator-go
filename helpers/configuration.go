@@ -1,22 +1,23 @@
 package helpers
 
 import (
-    "encoding/json"
-    "io/ioutil"
+	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
-type Configuration struct {
-    Database `json:"database"`
+type Setting struct {
+	Database struct {
+		ConnectionString string `yaml:"connection-string"`
+		Type             string `yaml:"type"`
+	} `yaml:"database"`
 }
 
-type Database struct {
-    ConnectionString string `json:"connection_string"`
-    Type             string `json:"type"`
-}
+// LoadSettings loads settings from /conf/settings.yml
+func LoadSettings() (Setting, error) {
+	data, _ := ioutil.ReadFile("conf/settings.yml")
 
-func LoadConfiguration() Configuration {
-    data, _ := ioutil.ReadFile("conf/mapping.json")
-    var configuration Configuration
-    json.Unmarshal(data, &configuration)
-    return configuration
+	setting := Setting{}
+	err := yaml.Unmarshal([]byte(data), &setting)
+	return setting, err
 }

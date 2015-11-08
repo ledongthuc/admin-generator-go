@@ -20,16 +20,20 @@ var Column columnDataAccess
 
 // GetAll use to select all column from `information_schema.columns`.
 func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
-	var columns []entity.Column
-	configuration := helpers.LoadConfiguration()
+	settings, err := helpers.LoadSettings()
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
 	dbx.Close()
 	if err != nil {
 		mlog.Error(err)
-		return columns
+		return nil
 	}
 
+	var columns []entity.Column
 	err = dbx.Select(&columns,
 		`SELECT
             t.column_name,
@@ -67,15 +71,19 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
 
 // GetByTable use to select columns from `information_schema.tables` of inputed tableName.
 func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.Column {
-	var columns []entity.Column
-	configuration := helpers.LoadConfiguration()
-
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	settings, err := helpers.LoadSettings()
 	if err != nil {
 		mlog.Error(err)
-		return columns
+		return nil
 	}
 
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
+
+	var columns []entity.Column
 	queryString := fmt.Sprintf(`SELECT
         t.column_name,
         t.is_nullable,

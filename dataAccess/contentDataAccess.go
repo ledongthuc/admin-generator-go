@@ -22,9 +22,13 @@ var Content contentDataAccess
 
 // GetAll use to select all tables from table dynamically
 func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]interface{} {
-	configuration := helpers.LoadConfiguration()
+	settings, err := helpers.LoadSettings()
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return nil
@@ -55,9 +59,13 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 
 // GetById get by ID
 func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id string) map[string]interface{} {
-	configuration := helpers.LoadConfiguration()
+	settings, err := helpers.LoadSettings()
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return nil
@@ -86,9 +94,13 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 }
 
 func (dataAccess *contentDataAccess) New(tableName string, data map[string]string) (int64, error) {
-	configuration := helpers.LoadConfiguration()
+	settings, err := helpers.LoadSettings()
+	if err != nil {
+		mlog.Error(err)
+		return -1, err
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
@@ -124,9 +136,13 @@ func (dataAccess *contentDataAccess) Update(tableName string, keyName string, ke
 		return -1, errors.New("Data should be not empty")
 	}
 
-	configuration := helpers.LoadConfiguration()
+	settings, err := helpers.LoadSettings()
+	if err != nil {
+		mlog.Error(err)
+		return -1, err
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return -1, err
@@ -158,11 +174,16 @@ func (dataAccess *contentDataAccess) Update(tableName string, keyName string, ke
 }
 
 func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, keyValue string) error {
-	configuration := helpers.LoadConfiguration()
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	settings, err := helpers.LoadSettings()
 	if err != nil {
 		mlog.Error(err)
-		return nil
+		return err
+	}
+
+	dbx, err := sqlx.Open(settings.Database.Type, settings.Database.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return err
 	}
 
 	query := `DELETE FROM ` + strconv.Quote(tableName) + ` WHERE ` + keyName + ` = '` + keyValue + `'`
