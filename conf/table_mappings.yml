@@ -1,0 +1,9 @@
+action:
+    is_show: false
+    columns:
+        created_at:
+            is_show: true
+        updated_at:
+            is_show: true
+transaction_step:
+    is_show: false

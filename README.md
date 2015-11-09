@@ -11,3 +11,4 @@ Admin generator base on configuration and database
 7. Scroll to top when add/edit successfully
 8. Delete error will show error when has error
 9. Remove useless files in /ui/
+10. AngularJS handle 404 error

@@ -31,6 +31,11 @@ func (handler *ContentAPIHandler) List(request *http.Request, param map[string]s
 		return 400, "Don't have any name"
 	}
 
+	isShowed := dataAccess.TableMapping.IsShowTable(handler.TableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + handler.TableName
+	}
+
 	var responseCode = 200
 	var result interface{}
 	result = dataAccess.Content.GetAll(handler.TableName)
@@ -48,6 +53,11 @@ func (handler *ContentAPIHandler) Detail(request *http.Request, keyValue string)
 		return 400, "Don't have any name"
 	}
 
+	isShowed := dataAccess.TableMapping.IsShowTable(handler.TableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + handler.TableName
+	}
+
 	key := dataAccess.Table.GetKeyByTableName(handler.TableName)
 	if key == "" {
 		return 400, "Don't have primary key"
@@ -63,6 +73,11 @@ func (handler *ContentAPIHandler) Create(request *http.Request, data map[string]
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return 400, "Can't read the request"
+	}
+
+	isShowed := dataAccess.TableMapping.IsShowTable(handler.TableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + handler.TableName
 	}
 
 	var formParams map[string]string
@@ -99,6 +114,11 @@ func (handler *ContentAPIHandler) Update(request *http.Request, keyValue string,
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return 400, "Can't read the request"
+	}
+
+	isShowed := dataAccess.TableMapping.IsShowTable(handler.TableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + handler.TableName
 	}
 
 	var formParams map[string]string
@@ -138,6 +158,11 @@ func (handler *ContentAPIHandler) Delete(request *http.Request, key string) (int
 	mlog.Info("Delete, Table name: %s", handler.TableName)
 	if handler.TableName == "" {
 		return 400, "Don't have any name"
+	}
+
+	isShowed := dataAccess.TableMapping.IsShowTable(handler.TableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + handler.TableName
 	}
 
 	keyName := dataAccess.Table.GetKeyByTableName(handler.TableName)

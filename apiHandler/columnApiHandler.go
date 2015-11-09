@@ -17,6 +17,12 @@ func (handler *ColumnsAPIHandler) List(request *http.Request, param map[string]s
 	if tableName == "" {
 		return 400, "Missing table_name"
 	}
+
+	isShowed := dataAccess.TableMapping.IsShowTable(tableName)
+	if !isShowed {
+		return 404, "Doesn't see table " + tableName
+	}
+
 	columns := dataAccess.Column.GetByTable(tableName)
 	return 200, columns
 }
