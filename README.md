@@ -10,3 +10,4 @@ Admin generator base on configuration and database
 6. SQL Injection
 7. Scroll to top when add/edit successfully
 8. Delete error will show error when has error
+9. Remove useless files in /ui/

@@ -10,14 +10,14 @@ import (
 )
 
 // TableDataAccess contains methods that used for access to `information_schema.tables`.
-type tableDataAccess struct {
+type table struct {
 }
 
 // Table instance of Table Data Access
-var Table tableDataAccess
+var Table table
 
 // GetKeyByTableName primary key by table name
-func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) string {
+func (table *table) GetKeyByTableName(tableName string) string {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -66,7 +66,7 @@ func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) stri
 }
 
 // GetAll use to select all tables from `information_schema.tables`.
-func (tableDataAccess *tableDataAccess) GetAll() []entity.Table {
+func (table *table) GetAll() []entity.Table {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)

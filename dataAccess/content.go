@@ -14,14 +14,14 @@ import (
 )
 
 // TableDataAccess contains methods that used for access to `information_schema.tables`.
-type contentDataAccess struct {
+type content struct {
 }
 
 // Content is instance for ContentDataAccess
-var Content contentDataAccess
+var Content content
 
 // GetAll use to select all tables from table dynamically
-func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]interface{} {
+func (content *content) GetAll(tableName string) []map[string]interface{} {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -51,14 +51,14 @@ func (dataAccess *contentDataAccess) GetAll(tableName string) []map[string]inter
 			continue
 		}
 
-		result = append(result, dataAccess.format(row))
+		result = append(result, content.format(row))
 	}
 
 	return result
 }
 
 // GetById get by ID
-func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id string) map[string]interface{} {
+func (content *content) GetById(tableName string, idName string, id string) map[string]interface{} {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -87,13 +87,13 @@ func (dataAccess *contentDataAccess) GetById(tableName string, idName string, id
 			continue
 		}
 
-		return dataAccess.format(row)
+		return content.format(row)
 	}
 
 	return nil
 }
 
-func (dataAccess *contentDataAccess) New(tableName string, data map[string]string) (int64, error) {
+func (content *content) New(tableName string, data map[string]string) (int64, error) {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -131,7 +131,7 @@ func (dataAccess *contentDataAccess) New(tableName string, data map[string]strin
 	return -1, nil
 }
 
-func (dataAccess *contentDataAccess) Update(tableName string, keyName string, keyValue string, data map[string]string) (int64, error) {
+func (content *content) Update(tableName string, keyName string, keyValue string, data map[string]string) (int64, error) {
 	if data == nil || len(data) <= 0 {
 		return -1, errors.New("Data should be not empty")
 	}
@@ -173,7 +173,7 @@ func (dataAccess *contentDataAccess) Update(tableName string, keyName string, ke
 	return -1, nil
 }
 
-func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, keyValue string) error {
+func (content *content) Delete(tableName string, keyName string, keyValue string) error {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -192,7 +192,7 @@ func (dataAccess *contentDataAccess) Delete(tableName string, keyName string, ke
 	return err
 }
 
-func (dataAccess *contentDataAccess) format(data map[string]interface{}) map[string]interface{} {
+func (content *content) format(data map[string]interface{}) map[string]interface{} {
 	for columnName, value := range data {
 		switch value.(type) {
 		case []uint8:

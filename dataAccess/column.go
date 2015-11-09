@@ -12,14 +12,14 @@ import (
 )
 
 // ColumnDataAccess contains methods that used for access to `information_schema.columns`.
-type columnDataAccess struct {
+type column struct {
 }
 
 // Column is the instance of ColumnDataAccess
-var Column columnDataAccess
+var Column column
 
 // GetAll use to select all column from `information_schema.columns`.
-func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
+func (column *column) GetAll() []entity.Column {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
@@ -70,7 +70,7 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
 }
 
 // GetByTable use to select columns from `information_schema.tables` of inputed tableName.
-func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.Column {
+func (column *column) GetByTable(tableName string) []entity.Column {
 	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
