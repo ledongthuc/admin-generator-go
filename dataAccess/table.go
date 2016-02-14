@@ -6,20 +6,25 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/ledongthuc/admin-generator-go/entity"
-	"github.com/ledongthuc/admin-generator-go/helpers"
+	"github.com/ledongthuc/admin-generator-go/services"
 )
 
 // TableDataAccess contains methods that used for access to `information_schema.tables`.
-type tableDataAccess struct {
+type table struct {
 }
 
 // Table instance of Table Data Access
-var Table tableDataAccess
+var Table table
 
 // GetKeyByTableName primary key by table name
-func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) string {
-	configuration := helpers.LoadConfiguration()
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+func (table *table) GetKeyByTableName(tableName string) string {
+	setting, err := services.Settings.Load()
+	if err != nil {
+		mlog.Error(err)
+		return ""
+	}
+
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	if err != nil {
 		mlog.Error(err)
 		return ""
@@ -61,16 +66,20 @@ func (tableDataAccess *tableDataAccess) GetKeyByTableName(tableName string) stri
 }
 
 // GetAll use to select all tables from `information_schema.tables`.
-func (tableDataAccess *tableDataAccess) GetAll() []entity.Table {
-	var tables []entity.Table
-	configuration := helpers.LoadConfiguration()
-
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+func (table *table) GetAll() []entity.Table {
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
 		return nil
 	}
 
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
+
+	var tables []entity.Table
 	err = dbx.Select(&tables,
 		`SELECT
             t.table_schema, t.table_name, kcu.column_name as primary_key

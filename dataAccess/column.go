@@ -8,28 +8,32 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/ledongthuc/admin-generator-go/entity"
-	"github.com/ledongthuc/admin-generator-go/helpers"
+	"github.com/ledongthuc/admin-generator-go/services"
 )
 
 // ColumnDataAccess contains methods that used for access to `information_schema.columns`.
-type columnDataAccess struct {
+type column struct {
 }
 
 // Column is the instance of ColumnDataAccess
-var Column columnDataAccess
+var Column column
 
 // GetAll use to select all column from `information_schema.columns`.
-func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
-	var columns []entity.Column
-	configuration := helpers.LoadConfiguration()
+func (column *column) GetAll() []entity.Column {
+	setting, err := services.Settings.Load()
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
 
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
 	dbx.Close()
 	if err != nil {
 		mlog.Error(err)
-		return columns
+		return nil
 	}
 
+	var columns []entity.Column
 	err = dbx.Select(&columns,
 		`SELECT
             t.column_name,
@@ -66,16 +70,20 @@ func (columnDataAccess *columnDataAccess) GetAll() []entity.Column {
 }
 
 // GetByTable use to select columns from `information_schema.tables` of inputed tableName.
-func (columnDataAccess *columnDataAccess) GetByTable(tableName string) []entity.Column {
-	var columns []entity.Column
-	configuration := helpers.LoadConfiguration()
-
-	dbx, err := sqlx.Open(configuration.Type, configuration.ConnectionString)
+func (column *column) GetByTable(tableName string) []entity.Column {
+	setting, err := services.Settings.Load()
 	if err != nil {
 		mlog.Error(err)
-		return columns
+		return nil
 	}
 
+	dbx, err := sqlx.Open(setting.Database.Type, setting.Database.ConnectionString)
+	if err != nil {
+		mlog.Error(err)
+		return nil
+	}
+
+	var columns []entity.Column
 	queryString := fmt.Sprintf(`SELECT
         t.column_name,
         t.is_nullable,

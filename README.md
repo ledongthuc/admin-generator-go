@@ -2,13 +2,12 @@
 Admin generator base on configuration and database
 
 # Roadmap
-1. Authentication
-2. Display and hide field from confiruation
-4. Validation fields
-4. Filter and format fields
-5. Configuration for re-name table and columns more friendly
+1. Display and hide field from confiruation
+2. Validation fields
+3. Filter and format fields
+4. Configuration for re-name table and columns more friendly
+5. Add/Edit/Delete users
 6. SQL Injection
-7. Scroll to top
-8. Seperate error message
-9. Delete with hightline
-10. Delete error will show error
+7. Scroll to top when add/edit successfully
+8. Delete error will show error when has error
+9. Remove useless files in /ui/
